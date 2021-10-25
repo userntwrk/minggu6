@@ -39,6 +39,14 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
+                        <li class="nav-item">
+                           <a class="nav-link" href="/students">Data Student</a>
+                        </li>
+
+                        <li class="nav-item">
+                           <a class="nav-link" href="/users">Data User</a>
+                        </li>
+
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">

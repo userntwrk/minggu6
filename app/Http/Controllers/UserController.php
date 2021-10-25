@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Student;
+use App\Models\User;
 
-class StudentController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +14,8 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::all();
-        return view('student.index',['student' => $students]);
+        $user = User::all();
+        return view('user.index',['users' => $user]);
     }
 
     /**
@@ -25,7 +25,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        return view('student.create');
+        return view('auth.register');
     }
 
     /**
@@ -36,10 +36,7 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //add data
-        Student::create($request->all());
-        // if true, redirect to index
-        return redirect()->route('students.index')->with('success', 'Add data success!');
+        //
     }
 
     /**
@@ -50,9 +47,9 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-      $student = Student::find($id);
-      $students = Student::all();
-      return view('student.show',['student'=>$student],['students'=>$students]);
+        $user = User::find($id);
+        $users = User::all();
+        return view('user.show',['user'=>$user],['users'=>$users]);
     }
 
     /**
@@ -63,8 +60,8 @@ class StudentController extends Controller
      */
     public function edit($id)
     {
-      $student = Student::find($id);
-      return view('student.edit',['student'=>$student]);
+        $users = User::find($id);
+        return view('user.edit',['user'=>$users]);
     }
 
     /**
@@ -76,14 +73,11 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $student = Student::find($id);
-        $student->nim = $request->nim;
-        $student->name = $request->name;
-        $student->class = $request->class;
-        $student->department = $request->department;
-        $student->phone_number = $request->phone_number;
-        $student->save();
-        return redirect('/student')->with('status', 'Data Updates!');
+        $user = User::find($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->save();
+        return redirect('/users')->with('status', 'Data Updates!');
     }
 
     /**
@@ -94,17 +88,8 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        $student = Student::find($id);
-        $student->delete();
-        return redirect('/student')->with('warning', 'Data Deleted!');
-    }
-
-
-    public function search($id)
-    {
-        $student = $request->get('id');
-        $hasil = Student::where('nama', 'LIKE', '%' . $student . '%')->paginate(10);
-
-        return view('student.index', compact('hasil', 'student'));
+      $user = User::find($id);
+      $user->delete();
+      return redirect('/users')->with('warning', 'Data Deleted!');
     }
 }

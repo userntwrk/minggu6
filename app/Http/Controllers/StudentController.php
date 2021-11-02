@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\Kelas;
+
 
 class StudentController extends Controller
 {
@@ -14,7 +16,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::all();
+        $students = Student::with('kelas')->get();
         return view('student.index',['student' => $students]);
     }
 
@@ -25,7 +27,8 @@ class StudentController extends Controller
      */
     public function create()
     {
-        return view('student.create');
+        $kelas = Kelas::all();
+        return view('student.create',['kelas'=>$kelas]);
     }
 
     /**
@@ -36,10 +39,17 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //add data
-        Student::create($request->all());
+        $student = new Student;
+        $student->nim = $request->nim;
+        $student->name = $request->name;
+        $student->department = $request->department;
+        $student->phone_number = $request->phone_number;
+        $kelas = new Kelas;
+        $kelas->id = $request->Kelas;
+        $student->kelas()->associate($kelas);
+        $student->save();
         // if true, redirect to index
-        return redirect()->route('students.index')->with('success', 'Add data success!');
+        return redirect('/students')->with('warning', 'Data Added!');
     }
 
     /**
@@ -51,8 +61,7 @@ class StudentController extends Controller
     public function show($id)
     {
       $student = Student::find($id);
-      $students = Student::all();
-      return view('student.show',['student'=>$student],['students'=>$students]);
+      return view('student.show',['student'=>$student]);
     }
 
     /**
@@ -64,7 +73,8 @@ class StudentController extends Controller
     public function edit($id)
     {
       $student = Student::find($id);
-      return view('student.edit',['student'=>$student]);
+      $kelas = Kelas::all();
+      return view('student.edit',['student'=>$student], ['kelas'=>$kelas]);
     }
 
     /**
@@ -79,11 +89,16 @@ class StudentController extends Controller
         $student = Student::find($id);
         $student->nim = $request->nim;
         $student->name = $request->name;
-        $student->class = $request->class;
         $student->department = $request->department;
         $student->phone_number = $request->phone_number;
+
+        $kelas = new Kelas;
+        $kelas->id = $request->Kelas;
+
+        $student->kelas()->associate($kelas);
         $student->save();
-        return redirect('/student')->with('status', 'Data Updates!');
+
+        return redirect('/studentss')->with('status', 'Data Updates!');
     }
 
     /**
@@ -96,7 +111,7 @@ class StudentController extends Controller
     {
         $student = Student::find($id);
         $student->delete();
-        return redirect('/student')->with('warning', 'Data Deleted!');
+        return redirect('/students')->with('warning', 'Data Deleted!');
     }
 
 

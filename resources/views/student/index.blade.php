@@ -28,6 +28,7 @@
                 <td>{{ $s->nim }}</td>
                 <td>{{ $s->name }}</td>
                 <td>{{ $s->kelas->class_name }}</td>
+                <td>{{ $s->course->course_name }}</td>
                 <td><form action="/students/{{$s->id}}" method="post">
                         <a href="/students/{{$s->id}}/edit" class="btn btn-warning">Edit</a> |
                             @csrf

@@ -15,4 +15,9 @@ class Student extends Model
     {
         return $this->belongsTo(Kelas::class, 'class_id');
     }
+
+    public function courses()
+    {
+        return $this->belongsToMany(CourseStudent::class, 'id');
+    }
 }

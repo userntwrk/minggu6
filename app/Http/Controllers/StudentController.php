@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\Kelas;
 use App\Models\CourseStudent;
-
+use PDF;
 
 class StudentController extends Controller
 {
@@ -18,8 +18,7 @@ class StudentController extends Controller
     public function index()
     {
         $students = Student::with('kelas')->get();
-        $students = CourseStudent::with('course')->get();
-        return view('student.index',['student' => $students], ['course' => $students]);
+        return view('student.index',['student' => $students]);
     }
 
     /**
@@ -42,16 +41,21 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         $student = new Student;
+
+        if($request->file('photo')){ $image_name = $request->file('photo')->store('images','public'); }
         $student->nim = $request->nim;
         $student->name = $request->name;
         $student->department = $request->department;
         $student->phone_number = $request->phone_number;
+        $student->photo = $image_name;
+
         $kelas = new Kelas;
         $kelas->id = $request->Kelas;
+
         $student->kelas()->associate($kelas);
         $student->save();
         // if true, redirect to index
-        return redirect('/students')->with('warning', 'Data Added!');
+        return redirect('/students')->with('status', 'Data Added!');
     }
 
     /**
@@ -94,13 +98,16 @@ class StudentController extends Controller
         $student->department = $request->department;
         $student->phone_number = $request->phone_number;
 
+        if($student->photo && file_exists(storage_path('app/public/' . $student->photo))) { \Storage::delete('public/'.$student->photo); }
+        $image_name = $request->file('photo')->store('images', 'public'); $student->photo = $image_name;
+
         $kelas = new Kelas;
         $kelas->id = $request->Kelas;
 
         $student->kelas()->associate($kelas);
         $student->save();
 
-        return redirect('/studentss')->with('status', 'Data Updates!');
+        return redirect('/students')->with('status', 'Data Updates!');
     }
 
     /**
@@ -113,7 +120,7 @@ class StudentController extends Controller
     {
         $student = Student::find($id);
         $student->delete();
-        return redirect('/students')->with('warning', 'Data Deleted!');
+        return redirect('/students')->with('status', 'Data Deleted!');
     }
 
 
@@ -123,5 +130,18 @@ class StudentController extends Controller
         $hasil = Student::where('nama', 'LIKE', '%' . $student . '%')->paginate(10);
 
         return view('student.index', compact('hasil', 'student'));
+    }
+
+    public function detail($id)
+    {
+        $student = Student::find($id);
+        return view('student.detail', ['student'=>$student]);
+    }
+
+    public function report($id)
+    {
+        $student = Student::find($id);
+        $pdf = PDF::loadview('student.report',['student'=>$student]);
+        return $pdf->stream();
     }
 }

@@ -14,6 +14,7 @@
       @endif
       <a href="/students" class="btn btn-secondary">Back</a> <br><br>
       <div class="paragraf">
+        <img width="150px" src="{{asset('storage/'.$student->photo)}}"> <br><br>
         NIM : {{ $student->nim }}<br>
         Name : {{ $student->name }}<br>
         Class : {{ $student->kelas->class_name }}<br>

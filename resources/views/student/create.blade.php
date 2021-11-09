@@ -3,8 +3,13 @@
 @section('content')
 <div class="card">
   <div class="card-body">
-<form action="/students" method="post">
+<form action="/students" method="post" enctype="multipart/form-data">
   @csrf
+    <div class="form-group">
+        <label for="photo">Profile Photo</label>
+        <input type="file" class="form-control" required="required" name="photo"></br>
+    <div>
+
     <div class="form-group">
         <label for="nim">NIM</label>
         <input type="text" class="form-control" required="required" name="nim"></br>

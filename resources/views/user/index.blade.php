@@ -12,13 +12,14 @@
         {{ session('status') }}
       </div>
       @endif
-      <a href="/register" class="btn btn-primary">Add Data</a> <br><br>
+      <a href="/users/create" class="btn btn-primary">Add Data</a> <br><br>
       <table class="table table-responsive table-striped">
           <thead>
             <tr>
               <th>ID</th>
               <th>Name</th>
               <th>E-Mail</th>
+              <th>Role</th>
               <th>Aksi</th>
             </tr>
           </thead>
@@ -28,6 +29,7 @@
                 <td>{{ $s->id }}</td>
                 <td>{{ $s->name }}</td>
                 <td>{{ $s->email }}</td>
+                <td>{{ $s->role }}</td>
                 <td><form action="/users/{{$s->id}}" method="post">
                         <a href="/users/{{$s->id}}/edit" class="btn btn-warning">Edit</a> |
                             @csrf

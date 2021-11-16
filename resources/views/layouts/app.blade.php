@@ -44,7 +44,9 @@
                         </li>
 
                         <li class="nav-item">
+                          @can('manage-users')
                            <a class="nav-link" href="/users">Data User</a>
+                           @endcan
                         </li>
 
                         @guest

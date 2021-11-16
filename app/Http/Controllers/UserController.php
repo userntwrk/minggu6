@@ -4,9 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        // $this->middleware('auth');
+        $this->middleware(function($request, $next){
+            if(Gate::allows('manage-users')) return $next($request);
+            abort(403, 'Anda tidak memiliki cukup hak akses');
+        });
+    }
     /**
      * Display a listing of the resource.
      *
@@ -25,7 +34,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('auth.register');
+        $user = User::all();
+        return view('user.create');
     }
 
     /**
@@ -36,7 +46,15 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = new User;
+        $user->username = $request->username;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->role = $request->role;
+        $user->password = $request->password;
+        $user->save();
+        // if true, redirect to index
+        return redirect('/users')->with('status', 'Data Added!');
     }
 
     /**
